@@ -1,9 +1,12 @@
 package health
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -14,6 +17,9 @@ type ServiceDiscovery struct {
 	pathToConfig string
 	EndChan      chan struct{}
 	log          *logrus.Logger
+	pattern      string
+	before       string
+	after        string
 }
 
 func NewServiceDiscovery(config *Config, logger *logrus.Logger) *ServiceDiscovery {
@@ -35,6 +41,9 @@ func NewServiceDiscovery(config *Config, logger *logrus.Logger) *ServiceDiscover
 		pathToConfig: config.NginxConfigPath,
 		log:          logger,
 		EndChan:      make(chan struct{}),
+		pattern:      config.PatternAddr,
+		before:       config.Before,
+		after:        config.After,
 	}
 }
 
@@ -57,23 +66,38 @@ func (sd *ServiceDiscovery) Run() {
 				continue
 			}
 
-			if res.StatusCode != path.ExpectedStatus {
+			if res.StatusCode == path.ExpectedStatus {
 				ips = append(ips, path.IP)
 			}
 			_ = res.Body.Close()
 		}
 
 		if len(ips) != 0 {
-
+			sd.UpdateNginxConfig(ips)
 		}
 
 	case <-sd.EndChan:
-		sd.log.Warn("got signal on end chan, returning...")
+		sd.log.Warning("got signal on end chan, returning...")
 
 		return
 	}
 }
 
-func (sd *ServiceDiscovery) UpdateNginxConfig() {
+func (sd *ServiceDiscovery) UpdateNginxConfig(ips []string) {
+	body := ""
+	for _, ip := range ips {
+		body += fmt.Sprintf(sd.pattern, ip)
+	}
+
+	res := sd.before + body + sd.after
+
+	err := ioutil.WriteFile(sd.pathToConfig, []byte(res), os.ModePerm)
+	if err != nil {
+		sd.log.WithError(err).Error("can't update config")
+
+		return
+	}
+
+
 
 }

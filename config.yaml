@@ -1,9 +1,9 @@
 services:
-  - addr: ''
-    ip: ''
-    expected_status: 0
+  - addr: 'https://vk.com'
+    ip: 'vk.com'
+    expected_status: 200
 nginx_config_path: './example/nginx.conf'
-ticker: '10s'
+ticker: '1s'
 pattern_addr: 'server %s;'
 before:
   'http {

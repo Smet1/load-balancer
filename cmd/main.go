@@ -14,12 +14,15 @@ func main() {
 	flag.Parse()
 
 	log := logrus.New()
+	log.SetFormatter(&logrus.JSONFormatter{})
 
 	config := &health.Config{}
 	err := health.ReadConfig(*configPath, config)
 	if err != nil {
 		log.WithError(err).Fatal("can't read config")
 	}
+
+	log.WithField("config", config).Info("started with")
 
 	sd := health.NewServiceDiscovery(config, log)
 	go sd.Run()
