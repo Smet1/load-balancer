@@ -1,0 +1,21 @@
+services:
+  - addr: ''
+    ip: ''
+    expected_status: 0
+nginx_config_path: './example/nginx.conf'
+ticker: '10s'
+pattern_addr: 'server %s;'
+before:
+  'http {
+       upstream myapp1 {'
+after:
+  '}
+
+       server {
+           listen 80;
+
+           location / {
+               proxy_pass http://myapp1;
+           }
+       }
+   }'
