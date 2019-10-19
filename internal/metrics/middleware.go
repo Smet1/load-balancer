@@ -12,6 +12,7 @@ func GetMetricsMiddleware(log *logrus.Logger) func(http.Handler) http.Handler {
 		return ochttp.Handler{
 			Handler: http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 				begin := time.Now()
+				Stats.Requests.Inc()
 
 				next.ServeHTTP(res, req)
 
