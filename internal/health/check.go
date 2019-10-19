@@ -97,7 +97,4 @@ func (sd *ServiceDiscovery) UpdateNginxConfig(ips []string) {
 
 		return
 	}
-
-
-
 }
