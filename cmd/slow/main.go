@@ -20,7 +20,7 @@ import (
 
 func main() {
 	port := flag.String("port", ":80", "")
-	portMetrics := flag.String("port", ":8080", "")
+	portMetrics := flag.String("metrics", ":8080", "")
 	flag.Parse()
 
 	metrics.InitMetrics()
@@ -35,7 +35,7 @@ func main() {
 
 	returnOK := true
 
-	mux.Route("", func(r chi.Router) {
+	mux.Route("/api", func(r chi.Router) {
 		r.Post("/turn", func(res http.ResponseWriter, req *http.Request) {
 			returnOK = !returnOK
 
@@ -43,7 +43,7 @@ func main() {
 			return
 		})
 
-		r.Post("/status", func(res http.ResponseWriter, req *http.Request) {
+		r.Get("/status", func(res http.ResponseWriter, req *http.Request) {
 			if returnOK {
 				res.WriteHeader(http.StatusOK)
 				return
@@ -53,7 +53,7 @@ func main() {
 			return
 		})
 
-		r.Post("/dummy", func(res http.ResponseWriter, req *http.Request) {
+		r.Get("/dummy", func(res http.ResponseWriter, req *http.Request) {
 			sleep := 10 * time.Second
 			if returnOK {
 				sleep = 1 * time.Second
@@ -93,7 +93,7 @@ func main() {
 	}
 
 	go func() {
-		log.Infof("dummy slow service started on port %s", port)
+		log.Infof("dummy slow service started on port %s", *port)
 		if err := server.ListenAndServe(); err != nil {
 			if err == http.ErrServerClosed {
 				log.Info("graceful shutdown")
@@ -107,7 +107,7 @@ func main() {
 		metricsMux := chi.NewRouter()
 		metricsMux.Handle("/metrics", promhttp.Handler())
 
-		log.Infof("metrics for dummy slow service started on port %s", portMetrics)
+		log.Infof("metrics for dummy slow service started on port %s", *portMetrics)
 		if err := http.ListenAndServe(*portMetrics, metricsMux); err != nil {
 			if err == http.ErrServerClosed {
 				log.Info("graceful shutdown")
