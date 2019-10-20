@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  nginx:
+    container_name: nginx
+    restart: always
+    image: nginx
+    volumes:
+      - ./example/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '80:80'
+    depends_on:
+      - server-go-first
+      - server-go-second
+      - server-go-third
+      - prometheus
+      - grafana
+    links:
+      - server-go-third
+      - server-go-second
+      - server-go-first
+
   server-go-first:
     container_name: back-first
     restart: always
