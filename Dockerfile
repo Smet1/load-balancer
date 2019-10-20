@@ -11,4 +11,5 @@ FROM alpine
 
 COPY --from=build /server/main /main
 
-CMD ['./main', '-port=:80', '-metrics=:8080']
+#CMD ['./main', '-port=:80', '-metrics=:8080']
+CMD './main'
