@@ -1,57 +1,16 @@
 version: '3'
 
 services:
-  nginx:
-    container_name: nginx
-    restart: always
-    image: nginx
-    volumes:
-      - ./example/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - '80:80'
-    depends_on:
-      - server-go-first
-      - server-go-second
-      - server-go-third
-      - prometheus
-      - grafana
-    links:
-      - server-go-third
-      - server-go-second
-      - server-go-first
-
-  server-go-first:
-    container_name: back-first
-    restart: always
-    command: ./main -port=:81 -metrics=:810
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - '8010:81'
-      - '8011:810'
-
-  server-go-second:
-    container_name: back-second
-    restart: always
-    command: ./main -port=:82 -metrics=:820
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - '8020:82'
-      - '8021:820'
-
-  server-go-third:
-    container_name: back-third
-    restart: always
-    command: ./main -port=:83 -metrics=:830
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - '8030:83'
-      - '8031:830'
+#  server:
+#    container_name: back
+#    restart: always
+#    command: ./main -port=:80 -metrics=:8080
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#    ports:
+#      - '8000:80'
+#      - '8080:8080'
 
   #  MONITORING
   prometheus:
@@ -68,10 +27,3 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
       - '8009:9090'
-
-  grafana:
-    container_name: 5factorial-monitoring-grafana
-    image: grafana/grafana
-    restart: always
-    ports:
-      - '8008:3000'
