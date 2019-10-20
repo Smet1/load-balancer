@@ -11,7 +11,4 @@ FROM alpine
 
 COPY --from=build /server/main /main
 
-# Объявлем порт сервера
-EXPOSE 5051
-
 CMD ['./main', '-port=:80', '-metrics=:8080']
