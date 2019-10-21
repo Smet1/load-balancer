@@ -1,4 +1,4 @@
-#highload
+# highload
 # Create droplets do
 ![](32694A77-006C-4BB4-9AA2-C5E073C4C050.png)
 ![](568661E2-6812-4CA8-A029-27E71BAD0338.png)
@@ -30,6 +30,7 @@
 # nginx
 ## Бэкенды 
 Устанавливаем nginx на дроплет бэкендов
+
 [Как установить Nginx в Ubuntu 18.04 | DigitalOcean](https://www.digitalocean.com/community/tutorials/nginx-ubuntu-18-04-ru)
 
 ### Конфиг бэкендов
@@ -124,16 +125,20 @@ http {
 
 ## load balancer
 Устанавливаем openresty, это nginx с lua
+
 [OpenResty - OpenResty® Linux Packages](http://openresty.org/en/linux-packages.html)
 
 **ставим все под \Ubuntu\**
 
 ### Запуск
 `sudo fuser -k 80/tcp` - убить процесс на 80 порту
+
 `openresty -t` - проверить валидность конфига
+
 `openresty` - запустить nginx с lua на 80 порту
 
 `cat /var/log/nginx/error.log | tail -200` - последние 200 строк ошибок nginx (работает везде, openresty и nginx)
+
 `cat /var/log/nginx/access.log | tail -200` - последние 200 строк доступов к nginx (также как и в предыдущем пункте) 
 
 ### Конфиг балансера
@@ -241,12 +246,15 @@ http {
 ```
 
 # prometheus
-Запускаем на тачке с nginx docker-compose командой ./run.sh
+Запускаем на тачке с nginx docker-compose командой ./run.sh]
+
 Если что `chmod +x run.sh`
+
 (Больше ничего не надо, кроме изменения адресов в prometheus.yaml)
 
 ## Важно
 Прометеус ходит за метриками на `/metrics`
+
 Например, 165.22.36.3:8080/metrics
 
 В go есть специальная либа с метриками
@@ -265,7 +273,9 @@ scrape_configs:
 
 #  grafana
 Устанавливаем графану на тачку с nginx
+
 [Installing on Debian / Ubuntu | Grafana Documentation](https://grafana.com/docs/installation/debian/)
+
 [Grafana](http://167.71.172.49:3000/)
 
 
